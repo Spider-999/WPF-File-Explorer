@@ -7,32 +7,37 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using WPF_File_Explorer.Models;
 
 namespace WPF_File_Explorer
 {
     /// <summary>
     /// Set image based on path(if it's a drive, folder or file)
     /// </summary>
-    [ValueConversion(typeof(string), typeof(BitmapImage))]
-    internal class HeaderToImageConverter : IValueConverter
+    [ValueConversion(typeof(DirectoryItemType), typeof(BitmapImage))]
+    public class HeaderToImageConverter : IValueConverter
     {
         public static HeaderToImageConverter Instance = new HeaderToImageConverter();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = (string)value;
             var image = "Images/drive.png";
-            var name = Path.GetFileName(path);
 
-            if (path == null)
-                return null;
-
-            if (string.IsNullOrEmpty(name))
-                image = "Images/drive.png";
-            else if (new FileInfo(path).Attributes.HasFlag(FileAttributes.Directory))
-                image = "Images/folder_closed.png";
-            else
-                image = "Images/file.png";
+            switch((DirectoryItemType)value)
+            {
+                case DirectoryItemType.File:
+                    image = "Images/file.png";
+                    break;
+                case DirectoryItemType.Folder:
+                    image = "Images/folder_closed.png";
+                    break;
+                case DirectoryItemType.Drive:
+                    image = "Images/drive.png";
+                    break;
+                default:
+                    Console.WriteLine("Something went wrong");
+                    break;
+            }
 
             return new BitmapImage(new Uri($"pack://application:,,,/{image}"));
         }

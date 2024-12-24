@@ -14,6 +14,10 @@ namespace WPF_File_Explorer.Models
     {
         public DirectoryItemType directoryItemType { get; set; }
         public string fullPath { get; set; }
-        public string name { get { return Path.GetFileName(fullPath); } }
+        public string name 
+        { 
+            get 
+            { return directoryItemType == DirectoryItemType.Drive ? fullPath : Path.GetFileName(fullPath); } 
+        }
     }
 }
